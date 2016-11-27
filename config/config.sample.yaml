@@ -1,0 +1,33 @@
+# Sample configuration file
+
+# Display name. Defaults to RubyDoc.info
+# name: Chefdoc.info
+# url: http://chefdoc.info
+
+# The redis database to connect to.
+# database:
+#   host: redis
+#   port: 6379
+#   db: 1
+
+# Endpoints of cookbooks. This need be a sorted array. Later elements take
+# precedence. So if a cookbook/version exists on several endpoints the last
+# one wins.
+# endpoints:
+#   - name: chef-supermarket # Needs to be a unique identifier
+#     type: supermarket # Valid types are currently supermarket, chef_server
+#     url: https://supermarket.chef.io/
+#     desc: Official chef cookbook supermarket
+#     # Supermarket does not need any authentication.
+#     # client_name:
+#     # client_key:
+
+# Update from endpoints every 5 minutes
+# endpoint_interval: 300
+
+# Whether or not disk caching is enabled. Defaults to true
+# caching: true
+
+# If you want to use Google Analytics, uncomment the following line and add
+# your Site ID:
+# google_analytics:

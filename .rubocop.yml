@@ -1,0 +1,16 @@
+Metrics/LineLength:
+  Max: 120
+Metrics/MethodLength:
+  Max: 25
+Metrics/AbcSize:
+  Max: 25
+Metrics/ClassLength:
+  Max: 300
+Style/Documentation:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/FileName:
+  Enabled: false
+Style/GlobalVars:
+  AllowedVariables: [$CONFIG, $SETTINGS]

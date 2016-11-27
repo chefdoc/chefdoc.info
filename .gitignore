@@ -1,0 +1,8 @@
+.bundle
+tmp
+repos
+data
+log
+recent.sqlite
+public
+vendor

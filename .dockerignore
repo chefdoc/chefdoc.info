@@ -1,0 +1,10 @@
+data
+log
+repos
+public
+spec
+tmp
+.gitignore
+.bundle
+.git
+vendor

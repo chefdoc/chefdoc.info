@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title><%= h settings.name %>: Documenting Chef cookbooks</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="/css/custom.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="/css/projects.css" type="text/css" media="screen" charset="utf-8" />
+    <script type="text/javascript" charset="utf-8" src="/js/jquery.js"></script>
+    <script type="text/javascript">
+      function searchClick() {
+        searchPrompt = $('#docSearch').val();
+
+        $('#docSearch').focus(function() {
+          if ($(this).val().match(/^Search/)) {
+            $(this).val('');
+          }
+        });
+        $('#docSearch').blur(function() {
+          if ($(this).val() == '') {
+            $(this).val(searchPrompt);
+          }
+        });
+      }
+
+      function aboutLink() {
+        $('#about').click(function() {
+          if ($('#info').is(':hidden')) { $('#checkout').hide(); $('#tender_window').hide(); $('#info').fadeIn('fast'); }
+          else $('#info').fadeOut('fast');
+          return false;
+        });
+      }
+
+      function checkoutLink() {
+        $('#new_checkout').click(function() {
+          if ($('#checkout').is(':hidden')) { $('#info').hide(); $('#tender_window').hide(); $('#checkout').fadeIn('fast'); }
+          else $('#checkout').fadeOut('fast');
+          return false;
+        });
+      }
+
+      function helpLink() {
+        $('#help').click(function() {
+          if ($('#tender_window').is(':visible')) {
+            $('#tender_window').hide();
+          } else {
+            $('#help_tender').click();
+            $('#info').hide();
+            $('#checkout').hide();
+          }
+        });
+      }
+
+      function reloadProject() {
+        $('.libraries .project_reload').click(function() {
+          var proj = $(this).parent().find('a:first-child').text();
+          $('#url').val("git://github.com/" + proj);
+          $('#commit').val('');
+          $('#checkout_form').submit();
+          $(this).find('img').attr('src', '/images/loading.gif');
+          return false;
+        });
+      }
+
+      function saveIndex(url) {
+        var date = new Date();
+        date.setDate(date.getDate() + (url == '' ? -999 : 99999));
+        document.cookie = "defaultIndex=" + escape(url) + ";expires=" + date.toUTCString();
+      }
+
+      $(searchClick);
+      $(aboutLink);
+      $(checkoutLink);
+      $(helpLink);
+      $(reloadProject);
+    </script>
+  </head>
+  <body>
+    <img src="/images/logo.gif" width="1" height="1" style="display: none" alt="Rubydoc.info" />
+    <noscript>
+      <style type="text/css" media="screen">
+        body { margin: 0; padding: 0;}
+        #logo, #content { padding: 0 20px; }
+        #noscript { background: #111; color: #fff; padding: 10px 20px; }
+        #top_nav { top: 48px; }
+      </style>
+      <div id="noscript"><strong>It seems you've disabled Javascript.</strong>
+        That's okay, but you might run into some problems. We try to make things work without script support
+        as much as possible, but sometimes it needs to be used. We apologize for any inconvenience and hope you understand.</div>
+    </noscript>
+    <div id="logo">
+      <h1><a href="/"><%= h settings.name %></a> <small>YARD Documentation Server for Chef cookbooks</small></h1>
+    </div>
+
+    <ul id="top_nav">
+      <li><a id="about" href="#">About</a></li>
+    </ul>
+    <div class="clear"></div>
+
+    <div id="info">
+      <p>
+        <strong><%= h settings.name %></strong> is your source for open source Chef cookbook documentation,
+        generating fresh docs for Cookbooks.
+      </p>
+      <p>
+        This site uses <a href="http://github.com/chefdoc/yard-chefdoc">yard-chefdoc</a> to generate docs on the fly.
+        To make your docs look better, you can check out some of yard-chefdocs
+        <a href="http://rubydoc.info/gems/yard-chefdoc/file/docs/README.md">killer features</a>.
+      </p>
+      <p>
+        Chefdoc.info is an open source community project and not affiliated with Chef Software Inc. ("Chef").
+      </p>
+      <p>
+        <small>
+          <%= h settings.name %> was made possible by <strong>Jörg Herzinger</strong>.
+        </small>
+      </p>
+    </div>
+
+    <%= yield %>
+
+    <div id="footer">
+      <p><a href="http://github.com/chefdoc/chefdoc.info"><%= h settings.name %></a> is powered by <a href="http://yardoc.org/">yard</a> <%= YARD::VERSION %> and <a href="http://github.com/chefdoc/yard-chefdoc">yard-chefdoc</a> <%= YARD::CodeObjects::Chef::VERSION %> (ruby-<%= RUBY_VERSION %>)</p>
+      <p>&copy; 2017 Jörg Herzinger (<a href="https://github.com/joerg">https://github.com/joerg</a>)</p>
+      <% if defined? settings.sponsor %>
+        <div class="sponsor">
+          <p>Sponsored by</p>
+          <% [settings.sponsor].flatten.each do |sponsor| %>
+            <a href="http://<%= sponsor %>"><img src="/images/sponsor/<%= sponsor %>.png" alt="Sponsored by <%= h sponsor %>"/></a>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </body>
+
+  <% if defined? settings.google_analytics %>
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', '<%= settings.google_analytics %>', 'auto');
+    ga('send', 'pageview');
+    </script>
+  <% end %>
+</html>

@@ -1,0 +1,16 @@
+source 'https://rubygems.org'
+
+gem 'ridley', '~> 5.1.0'
+gem 'sinatra', '>= 1.3'
+gem 'json'
+gem 'rake'
+gem 'version_sorter'
+gem 'i18n'
+gem 'net-http-persistent', '~> 2.0'
+gem 'redis'
+gem 'mixlib-archive'
+gem 'retryable'
+gem 'rufus-scheduler'
+gem 'yard', git: 'http://github.com/lsegal/yard'
+gem 'yard-chefdoc', git: 'http://github.com/chefdoc/yard-chefdoc' # Use git until a gem is released
+gem 'puma'
