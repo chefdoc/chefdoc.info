@@ -55,7 +55,7 @@ namespace :docker do
 
   desc 'Start docker image'
   task start: [:start_redis] do
-    wd = ENV['WORKDIR'] || File.expand_path(File.dirname(__FILE__))
+    wd = ENV['WORKDIR'] || File.expand_path('data', File.dirname(__FILE__))
     options = ['-d',
                "--volume=#{wd}:/data",
                "--env 'REDIS_HOST=redis.db'",
@@ -83,8 +83,9 @@ namespace :docker do
 
   desc 'Stops docker image'
   task stop: [:stop_redis] do
-    pids = `docker ps -f label=chefdoc -q`.strip
-    sh "docker rm -f #{pids}"
+    sh 'docker rm -f chefdoc' do |ok, _res|
+      puts 'Redis container not running' unless ok
+    end
   end
 
   desc 'Restart docker image'
@@ -102,7 +103,9 @@ namespace :docker do
 
   desc 'Remove redis container cleaning the database cache'
   task :stop_redis do
-    sh 'docker rm -f chefdoc-redis'
+    sh 'docker rm -f chefdoc-redis' do |ok, _res|
+      puts 'Redis container not running' unless ok
+    end
   end
 
   desc 'Restart redis (remove container and start again)'

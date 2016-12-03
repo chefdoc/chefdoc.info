@@ -11,7 +11,6 @@ RUN bundle install
 
 EXPOSE 8080
 ENV DOCKERIZED=1
-LABEL chefdoc=true
 
 # Put all data in this volume
 ENV DATA_PATH=/data
