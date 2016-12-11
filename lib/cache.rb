@@ -17,11 +17,14 @@ module Cache
     paths.each do |f|
       f = '/index' if f == '/'
       if f[-1, 1] == '/'
-        files << File.join(STATIC_PATH, f)
+        full_path = File.join(STATIC_PATH, f)
+        files << full_path if File.exit?(full_path)
         f = f[0...-1]
       end
-      files << File.join(STATIC_PATH, f + '.html')
+      full_path = File.join(STATIC_PATH, f + '.html')
+      files << full_path if File.exist?(full_path)
     end
+    return 0 if files.empty?
 
     rm_cmd = "rm -rf #{files.join(' ')}"
     Helpers.sh(rm_cmd, 'Flushing cache', false)

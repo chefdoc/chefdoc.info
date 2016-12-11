@@ -54,7 +54,19 @@ namespace :docker do
   end
 
   desc 'Start docker image'
-  task start: [:start_redis] do
+  task :start do
+    wd = ENV['WORKDIR'] || File.expand_path('data', File.dirname(__FILE__))
+    options = ['-d',
+               "--volume=#{wd}:/data",
+               '--name chefdoc',
+               '-p 8080:8080'
+             ]
+    sh "rm -rf #{wd} && mkdir -p #{wd}"
+    sh "docker run #{options.join(' ')} #{DOCKER_IMAGE}"
+  end
+
+  desc 'Start docker image with redis'
+  task start_with_redis: [:start_redis] do
     wd = ENV['WORKDIR'] || File.expand_path('data', File.dirname(__FILE__))
     options = ['-d',
                "--volume=#{wd}:/data",

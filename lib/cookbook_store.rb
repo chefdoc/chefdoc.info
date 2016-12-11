@@ -1,7 +1,6 @@
 # require 'sequel'
 require 'base64'
 require 'version_sorter'
-require 'redis'
 require 'time'
 require 'openssl'
 require 'ridley'

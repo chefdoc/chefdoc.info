@@ -6,7 +6,6 @@ require 'bundler/setup'
 require 'yaml'
 require 'yard'
 require 'cookbook_store'
-require 'redis'
 
 YARD::Server::Adapter.setup
 YARD::Templates::Engine.register_template_path(File.dirname(__FILE__) + '/templates')
@@ -38,3 +37,12 @@ require_relative 'lib/helpers'
 require_relative 'lib/configuration'
 
 $CONFIG = Configuration.load
+
+# For testing an possibly small installations use a single FakeRedis connection.
+# Otherwise initialize the redis connections in the worker.
+if $CONFIG[:database][:host].nil? || $CONFIG[:database][:host].empty?
+  require 'fakeredis'
+  $CONFIG[:database] = Redis.new
+else
+  require 'redis'
+end

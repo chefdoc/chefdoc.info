@@ -53,24 +53,6 @@ class DocServer < Sinatra::Base
   end
 
   def self.load_configuration
-    set :name, 'Chefdoc'
-    set :url, 'http://chefdoc.info'
-
-    set :caching, false
-    set :rubygems, ''
-    set :endpoints, [
-      { 'name' => 'chef-supermarket',
-        'type' => 'supermarket',
-        'url'  => 'https://supermarket.chef.io/',
-        'desc' => 'Official chef cookbook supermarket'
-      }
-    ]
-    set :database, host: ENV['REDIS_HOST'] || 'localhost',
-                   port: ENV['REDIS_PORT'] || 6379,
-                   db:   ENV['REDIS_DB']   || 1
-    set :endpoint_interval, 5 * 60 # 5 Minutes
-    set :google_analytics, ENV['G_ANALYTICS_ID']
-
     puts ">> Loading #{CONFIG_FILE}"
     $CONFIG.each do |key, value|
       set key, value
