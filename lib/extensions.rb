@@ -133,8 +133,11 @@ module YARD
       def sanitize_extracted_cookbook
         puts "Sanitizing remote cookbook path to #{source_path}"
 
+        # Define which elements should not be moved from the extracted cookbook.
+        # PaxHeader is an archive artifact that exists in some older cookbooks.
+        no_move = ['.', '..', 'PaxHeader'].map { |e| "#{source_path}/#{name}/#{e}" }
         to_move = Dir.glob("#{source_path}/#{name}/{.*,*}").reject do |i|
-          i == "#{source_path}/#{name}/." || i == "#{source_path}/#{name}/.."
+          no_move.include? i
         end
 
         FileUtils.mv to_move, source_path
