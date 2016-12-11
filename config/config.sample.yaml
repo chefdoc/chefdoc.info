@@ -21,6 +21,12 @@
 #     # Supermarket does not need any authentication.
 #     # client_name:
 #     # client_key:
+#   - name: acme-chef-server
+#     type: chef_server
+#     url: https://chef.acme.com/organizations/acme
+#     desc: ACME Chef Server
+#     client_name: technical-user
+#     client_kay: "-----BEGIN RSA PRIVATE KEY-----\n<key in here with '\n' for newlines>\n-----END RSA PRIVATE KEY-----"
 
 # Update from endpoints every 5 minutes
 # endpoint_interval: 300

@@ -6,3 +6,4 @@ log
 recent.sqlite
 public
 vendor
+config/config.yaml

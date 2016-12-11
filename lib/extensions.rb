@@ -42,24 +42,24 @@ module YARD
       protected
 
       def load_yardoc_from_supermarket
-        if File.directory?(source_yardoc_file)
+        if File.directory?(yardoc_file_for_supermarket)
           return if ready?
           raise LibraryNotPreparedError
         end
 
         # Remote cookbook from supermarket
         url = download_url
-        puts "#{Time.now}: Downloading remote cookbook file #{url}"
+        puts "#{Time.now}: Downloading remote cookbook #{name} from supermarket #{url}"
 
-        FileUtils.mkdir_p(source_path)
+        FileUtils.mkdir_p(source_path_for_supermarket)
 
         safe_mode = YARD::Config.options[:safe_mode]
 
         Thread.new do
           begin
-            cb_archive = download_cookbook(url)
+            cb_archive = download_cookbook_from_supermarket(url)
             expand_cookbook(cb_archive)
-            sanitize_extracted_cookbook
+            sanitize_cookbook
 
             generate_yardoc(safe_mode)
             clean_source(cb_archive)
@@ -67,24 +67,60 @@ module YARD
             self.yardoc_file = yardoc_file_for_supermarket
           rescue OpenURI::HTTPError => e
             puts "#{Time.now}: ERROR WITH COOKBOOK! (#{e.message})"
-            FileUtils.rmdir_rf(source_path)
+            FileUtils.rmdir_rf(source_path_for_supermarket)
           end
         end
         raise LibraryNotPreparedError
       end
 
-      def source_path_for_supermarket
+      def load_yardoc_from_chef_server
+        if File.directory?(yardoc_file_for_chef_server)
+          return if ready?
+          raise LibraryNotPreparedError
+        end
+
+        puts "#{Time.now}: Downloading remote cookbook #{name} from chef_server."
+        FileUtils.mkdir_p(source_path_for_chef_server)
+
+        safe_mode = YARD::Config.options[:safe_mode]
+
+        Thread.new do
+          begin
+            ridley.cookbook.download(name, version, source_path_for_chef_server)
+            sanitize_cookbook
+
+            generate_yardoc(safe_mode)
+
+            self.yardoc_file = yardoc_file_for_chef_server
+          rescue OpenURI::HTTPError => e
+            puts "#{Time.now}: ERROR WITH COOKBOOK! (#{e.message})"
+            FileUtils.rmdir_rf(source_path_for_chef_server)
+          end
+        end
+        raise LibraryNotPreparedError
+      end
+
+      def cookbook_source_path
         File.join(::COOKBOOKS_PATH, name[0].downcase, name, version)
       end
+
+      alias source_path_for_supermarket cookbook_source_path
+      alias source_path_for_chef_server cookbook_source_path
 
       def source_yardoc_file
         File.join(source_path, Registry::DEFAULT_YARDOC_FILE)
       end
 
       alias yardoc_file_for_supermarket source_yardoc_file
+      alias yardoc_file_for_chef_server source_yardoc_file
 
       def load_yardoc_file_for_supermarket
-        return source_yardoc_file if File.exist?(source_yardoc_file)
+        return yardoc_file_for_supermarket if File.exist?(yardoc_file_for_supermarket)
+        nil
+      end
+
+      def load_yardoc_file_for_chef_server
+        return yardoc_file_for_chef_server if File.exist?(yardoc_file_for_chef_server)
         nil
       end
 
@@ -107,8 +143,8 @@ module YARD
       #   a URL to stream the response body from
       #
       # @return [Tempfile]
-      def download_cookbook(target)
-        local = Tempfile.new('cookbook', source_path)
+      def download_cookbook_from_supermarket(target)
+        local = Tempfile.new('cookbook', source_path_for_supermarket)
         local.binmode
 
         Retryable.retryable(tries: 5, on: OpenURI::HTTPError, sleep: 0.5) do
@@ -130,7 +166,8 @@ module YARD
 
       # Mixlib::Archive extracts into a directory by the name of the archive.
       # We need to move all files from this directory to its parent
-      def sanitize_extracted_cookbook
+      # There are also some bad files which we need to make sure don't exist.
+      def sanitize_cookbook
         puts "Sanitizing remote cookbook path to #{source_path}"
 
         # Define which elements should not be moved from the extracted cookbook.
@@ -141,7 +178,9 @@ module YARD
         end
 
         FileUtils.mv to_move, source_path
-        FileUtils.rm_rf "#{source_path}/#{name}"
+
+        bad_files = [name, 'PaxHeader', '.yardopts'].map { |bf| "#{source_path}/#{bf}" }
+        FileUtils.rm_rf bad_files
       end
 
       def clean_source(cb_archive)
