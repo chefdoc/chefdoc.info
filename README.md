@@ -24,7 +24,7 @@ There are also several environment variables that you can set to configure the s
 * REDIS_DB:   The Redis database to use, defaults to 1.
 * G_ANALYTICS_ID: Google Analytis ID if you want to use it.
 
-The volume containing all data is attached to /data.
+If the redis options are not set an in memory redis library will be used which is sufficient for small deployments. The volume containing all data is attached to /data.
 
 More documentation on how to run chefdoc can be found in the wiki at https://github.com/chefdoc/chefdoc.info/wiki.
 

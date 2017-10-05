@@ -10,9 +10,7 @@ namespace :server do
   end
 
   desc 'Restart the server'
-  task restart: 'cache:clean_index' do
-    sh 'kill -9 `cat tmp/pids/server.pid`'
-  end
+  task restart: %w[server:stop server:start]
 
   desc 'Shut down the server'
   task :stop do

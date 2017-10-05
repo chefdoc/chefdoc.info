@@ -16,7 +16,7 @@ class Configuration < Hash
         'desc' => 'Official chef cookbook supermarket'
       }
     ]
-    self[:database] = { host: ENV['REDIS_HOST'],
+    self[:database] = { host: ENV['REDIS_HOST'] || nil,
                         port: ENV['REDIS_PORT'] || 6379,
                         db:   ENV['REDIS_DB'] || 1 }
     self[:endpoint_interval] = (5 * 60) # 5 Minutes

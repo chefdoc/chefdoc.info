@@ -172,7 +172,6 @@ class DocServer < Sinatra::Base
   end
 
   # Simple search interfaces
-
   get %r{^/find/cookbooks} do
     self.class.load_cookbooks_adapter unless defined? settings.cookbooks_adapter
     @search = params[:q] || ''
